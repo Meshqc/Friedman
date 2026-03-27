@@ -1,12 +1,16 @@
 Package: Friedman
 Title: Simple Visualization Wrappers for Exploratory Data Analysis
 Version: 0.0.0.9000
-Authors@R: person("Animesh", "Singh", email = "animesh664@gmail.com", role = c("aut", "cre"))
-Author: Animesh Singh [aut, cre]
-Maintainer: Animesh Singh <animesh664@gmail.com>
-Description: A small set of wrapper functions around ggplot2 and lattice for
-    quickly making common plots like histograms, scatter plots, and box plots.
+Authors@R: person("Animesh", "Singh", email = "animesh664@gmail.com",
+    role = c("aut", "cre"))
+Description: A small set of wrapper functions around ggplot2 and lattice
+    for quickly making common plots like histograms, scatter plots, and
+    box plots during exploratory data analysis.
 Depends: R (>= 3.1.2)
-Imports: ggplot2, lattice, rlang
+Imports: ggplot2, lattice, rlang, stats
 License: CC0
+LazyData: true
+URL: https://github.com/Meshqc/Friedman
+BugReports: https://github.com/Meshqc/Friedman/issues
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown
 RoxygenNote: 7.2.3
