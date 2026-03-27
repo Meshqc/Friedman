@@ -1,0 +1,12 @@
+Package: Friedman
+Title: Simple Visualization Wrappers for Exploratory Data Analysis
+Version: 0.0.0.9000
+Authors@R: person("Animesh", "Singh", email = "animesh664@gmail.com", role = c("aut", "cre"))
+Author: Animesh Singh [aut, cre]
+Maintainer: Animesh Singh <animesh664@gmail.com>
+Description: A small set of wrapper functions around ggplot2 and lattice for
+    quickly making common plots like histograms, scatter plots, and box plots.
+Depends: R (>= 3.1.2)
+Imports: ggplot2, lattice, rlang
+License: CC0
+RoxygenNote: 7.2.3

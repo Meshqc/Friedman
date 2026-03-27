@@ -1,0 +1,20 @@
+\name{quick_hist}
+\alias{quick_hist}
+\title{histogram wrapper}
+\usage{
+quick_hist(data, col, bins = 30)
+}
+\arguments{
+\item{data}{a data frame}
+\item{col}{column to plot (unquoted)}
+\item{bins}{number of bins, default 30}
+}
+\value{
+ggplot object
+}
+\description{
+makes a ggplot2 histogram for a numeric column
+}
+\examples{
+quick_hist(mtcars, mpg)
+}

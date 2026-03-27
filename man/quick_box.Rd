@@ -1,0 +1,20 @@
+\name{quick_box}
+\alias{quick_box}
+\title{box plot wrapper}
+\usage{
+quick_box(data, x, y)
+}
+\arguments{
+\item{data}{a data frame}
+\item{x}{grouping column name (string)}
+\item{y}{numeric column name (string)}
+}
+\value{
+lattice trellis object
+}
+\description{
+lattice box-and-whisker plot, grouped by a categorical variable
+}
+\examples{
+quick_box(mtcars, "cyl", "mpg")
+}
