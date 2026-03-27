@@ -4,8 +4,8 @@
 [![R package version](https://img.shields.io/badge/version-0.0.0.9000-blue.svg)](https://github.com/Meshqc/Friedman)
 
 **Friedman** is a lightweight R package that provides one-line wrappers for the
-most common exploratory data analysis (EDA) plots — histograms, scatter plots,
-and box plots — so you can go from raw data to insight without writing the same
+most common exploratory data analysis (EDA) plots like histograms, scatter plots,
+and box plots so you can go from raw data to insight without writing the same
 boilerplate `ggplot2` setup over and over.
 
 ---
