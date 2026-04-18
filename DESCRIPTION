@@ -16,5 +16,4 @@ Encoding: UTF-8
 URL: https://github.com/Meshqc/Friedman
 BugReports: https://github.com/Meshqc/Friedman/issues
 Suggests: testthat (>= 3.0.0), knitr, rmarkdown
-VignetteBuilder: knitr
 RoxygenNote: 7.3.3
