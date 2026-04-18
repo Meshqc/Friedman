@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{quick_scatter}
 \alias{quick_scatter}
-\title{scatter plot wrapper}
+\title{Scatter plot wrapper}
 \usage{
 quick_scatter(data, x, y)
 }
@@ -14,10 +14,10 @@ quick_scatter(data, x, y)
 \item{y}{y-axis column (unquoted)}
 }
 \value{
-ggplot object
+a \code{friedman_plot} object
 }
 \description{
-scatter plot with a lm trend line using ggplot2
+Scatter plot with a linear trend line using ggplot2.
 }
 \examples{
 quick_scatter(mtcars, wt, mpg)

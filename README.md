@@ -1,111 +1,62 @@
 # Friedman
 
 [![License: CC0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
-[![R package version](https://img.shields.io/badge/version-0.0.0.9000-blue.svg)](https://github.com/Meshqc/Friedman)
 
-**Friedman** is a lightweight R package that provides one-line wrappers for the
-most common exploratory data analysis (EDA) plots like histograms, scatter plots,
-and box plots so you can go from raw data to insight without writing the same
-boilerplate `ggplot2` setup over and over.
+An R package I built for my stats class to make quick EDA plots without
+rewriting the same ggplot2 code every time.
 
----
+## Why
 
-## Motivation
+Every time I start looking at a new dataset I end up writing the same
+histogram, scatter plot, and box plot from scratch. This package wraps
+those into single function calls with decent defaults so I can actually
+focus on what the data is telling me.
 
-Every EDA session starts the same way: load a data frame, write a histogram,
-write a scatter plot, write a box plot, repeat. The `ggplot2` and `lattice`
-APIs are powerful but verbose for quick looks. Friedman wraps those three
-patterns into single, memorable calls with sensible defaults — giving you clean,
-publication-ready plots in one line while staying fully compatible with the
-underlying packages so you can extend them as needed.
-
----
-
-## Installation
-
-The package is in active development. Install directly from GitHub:
+## Install
 
 ```r
-# needs devtools
 devtools::install_github("Meshqc/Friedman")
 ```
-
----
 
 ## Functions
 
 | Function | What it does |
 |---|---|
-| `quick_hist(data, col, bins=30)` | ggplot2 histogram for any numeric column |
-| `quick_scatter(data, x, y)` | scatter plot with a linear trend line |
-| `quick_box(data, x, y)` | lattice box plot grouped by a categorical variable |
+| `quick_hist(data, col, bins=30)` | histogram of a numeric column |
+| `quick_scatter(data, x, y)` | scatter plot with a trend line |
+| `quick_box(data, x, y)` | box plot grouped by a category |
+| `quick_cor(data, method="pearson")` | correlation heatmap for all numeric columns |
+| `quick_pct_change(data, before, after, group)` | median % change by group, as a diverging bar chart |
+| `quick_compare(data, num_col, group_col)` | overlaid density curves by group |
+| `quick_summary(data)` | mean, median, sd, min, max for all numeric columns |
 
-## Examples
+All the plotting functions return a `friedman_plot` S3 object. You can
+call `summary()` on it to see metadata, or grab `$plot` to get the raw
+ggplot and add your own layers.
+
+## Example
 
 ```r
 library(Friedman)
+
+data(ai_job_impact)
+
+quick_hist(ai_job_impact, Age)
+quick_scatter(ai_job_impact, Years_Experience, Salary_After_AI)
+quick_box(ai_job_impact, "Job_Status", "Salary_After_AI")
+quick_cor(ai_job_impact)
+quick_pct_change(ai_job_impact, "Salary_Before_AI", "Salary_After_AI", "Job_Status")
+
+# extend a plot
+p <- quick_hist(ai_job_impact, Age)
+p$plot + ggplot2::labs(subtitle = "2000 employees")
 ```
 
-### Histogram — `quick_hist()`
+## Dataset
 
-```r
-quick_hist(mtcars, mpg)
-quick_hist(mtcars, mpg, bins = 15)
-```
-
-Produces a `ggplot2` histogram with a clean minimal theme and an automatic
-title derived from the column name.
-
-### Scatter plot — `quick_scatter()`
-
-```r
-quick_scatter(mtcars, wt, mpg)
-```
-
-Plots `mpg` on the y-axis against `wt` on the x-axis and overlays an `lm`
-trend line so you can eyeball linear relationships immediately.
-
-### Box plot — `quick_box()`
-
-```r
-quick_box(mtcars, "cyl", "mpg")
-```
-
-Renders a `lattice` box-and-whisker plot of `mpg` split by cylinder count.
-The grouping variable is automatically coerced to a factor.
-
----
-
-## Package Structure
-
-```
-Friedman/
-├── DESCRIPTION
-├── NAMESPACE
-├── R/
-│   └── plots.R
-└── man/
-    ├── quick_hist.Rd
-    ├── quick_scatter.Rd
-    └── quick_box.Rd
-```
-
----
-
-## Dependencies
-
-- `ggplot2` — histograms and scatter plots
-- `lattice` — box plots
-- `rlang` — needed for the `.data` pronoun inside ggplot calls
-- `stats` — `as.formula()` used in the box plot wrapper
-
-## What's next
-
-Bug reports and feature requests are welcome at the
-[GitHub Issues page](https://github.com/Meshqc/Friedman/issues).
-
----
+Includes `ai_job_impact` — 2,000 employee records with salary, job role,
+AI adoption level, automation risk, and more.
 
 ## License
 
-CC0 — Use without restrictions.
+CC0 — do whatever you want with it.

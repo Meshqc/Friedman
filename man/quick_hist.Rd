@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{quick_hist}
 \alias{quick_hist}
-\title{histogram wrapper}
+\title{Histogram wrapper}
 \usage{
 quick_hist(data, col, bins = 30)
 }
@@ -14,10 +14,10 @@ quick_hist(data, col, bins = 30)
 \item{bins}{number of bins, default 30}
 }
 \value{
-ggplot object
+a \code{friedman_plot} object
 }
 \description{
-makes a ggplot2 histogram for a numeric column
+Makes a ggplot2 histogram for a numeric column.
 }
 \examples{
 quick_hist(mtcars, mpg)

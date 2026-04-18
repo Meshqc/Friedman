@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.httr-oauth
+*.tar.gz
+*.Rcheck/
+vignettes/*.html
+vignettes/*.R

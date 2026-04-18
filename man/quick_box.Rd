@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{quick_box}
 \alias{quick_box}
-\title{box plot wrapper}
+\title{Box plot wrapper}
 \usage{
 quick_box(data, x, y)
 }
@@ -14,10 +14,10 @@ quick_box(data, x, y)
 \item{y}{numeric column name (string)}
 }
 \value{
-lattice trellis object
+a \code{friedman_plot} object
 }
 \description{
-lattice box-and-whisker plot, grouped by a categorical variable
+Box-and-whisker plot grouped by a categorical variable, using ggplot2.
 }
 \examples{
 quick_box(mtcars, "cyl", "mpg")

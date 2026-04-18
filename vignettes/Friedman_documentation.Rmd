@@ -1,0 +1,223 @@
+---
+title: "Friedman: Package Documentation"
+author: "Animesh Singh"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Friedman: Package Documentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width  = 7,
+  fig.height = 4.5
+)
+devtools::load_all()
+```
+
+## Overview
+
+This package started as a way to avoid rewriting the same ggplot2 setup every
+time I start a new dataset. It has six plotting functions and one summary
+function, all built around a custom S3 class called `friedman_plot` that
+keeps the plot, the data, and some metadata together in one object.
+
+---
+
+## Dataset: `ai_job_impact`
+
+The package ships with `ai_job_impact`, a 2,000-row survey dataset on how AI
+adoption has affected employees across industries.
+
+```{r}
+data(ai_job_impact)
+dim(ai_job_impact)
+head(ai_job_impact[, 1:8])
+```
+
+---
+
+## The `friedman_plot` S3 Class
+
+Every plotting function returns a `friedman_plot` object, which is just a
+named list with these fields:
+
+- `$plot` — the ggplot2 object
+- `$data` — the data frame that was passed in
+- `$type` — what kind of plot it is (e.g. `"histogram"`, `"scatter"`)
+- `$vars` — which columns were used
+- `$nrow` / `$ncol` — dimensions of the data
+
+Three methods are registered for it:
+
+- `print()` — prints a one-liner and renders the plot
+- `summary()` — shows metadata and basic stats for the variables used
+- `plot()` — re-renders the plot if you need it again
+
+```{r}
+p <- quick_hist(ai_job_impact, Age)
+class(p)
+names(p)
+```
+
+```{r}
+summary(p)
+```
+
+---
+
+## Functions
+
+### `quick_hist(data, col, bins = 30)`
+
+A ggplot2 histogram for any numeric column. Column is passed unquoted. The
+title and axis label are derived automatically from the column name.
+
+```{r}
+quick_hist(ai_job_impact, Age)
+```
+
+```{r}
+quick_hist(ai_job_impact, Salary_Before_AI, bins = 20)
+```
+
+---
+
+### `quick_scatter(data, x, y)`
+
+Scatter plot of two numeric columns with a linear trend line (`geom_smooth(method = "lm")`).
+Both columns are passed unquoted.
+
+```{r}
+quick_scatter(ai_job_impact, Years_Experience, Salary_After_AI)
+```
+
+---
+
+### `quick_box(data, x, y)`
+
+Box-and-whisker plot of a numeric column grouped by a categorical variable.
+Both arguments are strings. The grouping variable is coerced to a factor
+internally.
+
+```{r}
+quick_box(ai_job_impact, "Job_Status", "Salary_After_AI")
+```
+
+---
+
+### `quick_cor(data, method = "pearson")`
+
+Computes pairwise correlations for all numeric columns and renders a
+colour-coded heatmap annotated with coefficient values. Non-numeric columns
+are silently dropped. The `method` argument accepts `"pearson"`,
+`"kendall"`, or `"spearman"`.
+
+This function is more involved than the basic wrappers — it builds an
+intermediate tidy data frame from the correlation matrix before plotting,
+which allows `geom_tile` to map the full matrix correctly.
+
+```{r fig.width=8, fig.height=6}
+num_cols <- c("Age", "Years_Experience", "Salary_Before_AI",
+              "Salary_After_AI", "Work_Hours_Per_Week", "Job_Satisfaction")
+quick_cor(ai_job_impact[num_cols])
+```
+
+---
+
+### `quick_pct_change(data, before_col, after_col, group_col)`
+
+Computes the median percentage change `(after - before) / before * 100` for
+each group and plots the results as a horizontal diverging bar chart. Bars
+are coloured blue for positive change and salmon for negative, with a dashed
+zero line for reference. Works on any two numeric before/after columns —
+salaries, test scores, prices, etc.
+
+```{r}
+quick_pct_change(ai_job_impact,
+                 "Salary_Before_AI", "Salary_After_AI", "Job_Status")
+```
+
+```{r}
+quick_pct_change(ai_job_impact,
+                 "Salary_Before_AI", "Salary_After_AI", "AI_Adoption_Level")
+```
+
+---
+
+### `quick_summary(data)`
+
+Prints a tidy summary table of all numeric columns: mean, median, standard
+deviation, min, and max. Returns the table invisibly as a data frame.
+
+```{r}
+quick_summary(ai_job_impact[c("Age", "Salary_Before_AI", "Salary_After_AI",
+                               "Job_Satisfaction")])
+```
+
+---
+
+### `quick_compare(data, num_col, group_col)`
+
+Overlaid density curves for a numeric column split by a grouping variable.
+Useful for comparing distributions across categories without reducing them
+to box plot summaries.
+
+```{r}
+quick_compare(ai_job_impact, "Salary_After_AI", "Job_Status")
+```
+
+```{r}
+quick_compare(ai_job_impact, "Job_Satisfaction", "AI_Adoption_Level")
+```
+
+---
+
+## How it works under the hood
+
+The three basic functions (`quick_hist`, `quick_scatter`, `quick_box`) take
+unquoted column names, which I handle with `deparse(substitute())`. Inside
+the `aes()` calls I use the `.data` pronoun from `rlang` — without it, R CMD
+check throws notes about undefined variables, which I found out the hard way.
+
+I added a small internal helper `.check_col()` that runs before every plot.
+It checks that the column exists and is numeric when it needs to be, so you
+get a clear error immediately instead of something cryptic from inside ggplot2.
+
+I went with S3 over S4 for the class because the object is just a named list.
+S4 would add formal slot definitions and type validation which is overkill here.
+The three methods (`print`, `summary`, `plot`) cover everything you'd want to
+do with the output anyway.
+
+---
+
+## AI Use Disclosure
+
+I used an AI assistant in a few limited areas of this project:
+
+**Where it was used:** Formatting the roxygen documentation comments,
+suggesting the correct syntax for `.data` pronoun usage inside `aes()` to
+avoid R CMD check notes, helping structure the testthat test cases, and
+unblocking a DESCRIPTION field error I couldn't track down (the redundant
+`Author`/`Maintainer` fields conflicting with `Authors@R`).
+
+**What it contributed:** Syntax fixes and documentation formatting. The
+test structure was suggested by AI but I reviewed and adjusted each case to
+match what the functions actually do.
+
+**What I implemented independently:** The overall package concept and
+function design, choice of which plots to include and how to parameterize
+them, the decision to use S3 over S4, the `friedman_plot` class structure,
+the `quick_cor` and `quick_pct_change` logic, dataset selection, and all
+analysis and interpretation in this document.
+
+---
+
+## License
+
+CC0 1.0 Universal — no rights reserved.
