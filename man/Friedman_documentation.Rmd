@@ -189,7 +189,7 @@ I added a small internal helper `.check_col()` that runs before every plot.
 It checks that the column exists and is numeric when it needs to be, so you
 get a clear error immediately instead of something cryptic from inside ggplot2.
 
-I went with S3 over S4 for the class because the object is just a named list.
+I went with S3 over S4 because the object is just a named list.
 S4 would add formal slot definitions and type validation which is overkill here.
 The three methods (`print`, `summary`, `plot`) cover everything you'd want to
 do with the output anyway.
